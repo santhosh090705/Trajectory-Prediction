@@ -28,11 +28,11 @@
 
 | 🔢 Metric | 📊 Our Result | 🏁 Baseline (Social-LSTM) | 🏆 Winner |
 |:---:|:---:|:---:|:---:|
-| **minADE@3** | **0.4019 m** | 0.65 m | ✅ **Us!** |
-| **minFDE@3** | **0.6728 m** | 1.31 m | ✅ **Us!** |
-| **Miss Rate** | **4.85%** | — | ✅ **Us!** |
+| **minADE@3** | **0.4019 m** | 0.65 m | ✅ **Us! (38% better)** |
+| **minFDE@3** | **0.6728 m** | 1.31 m | ✅ **Us! (49% better)** |
+| **Miss Rate** | **4.85%** | — | ✅ **95.15% within 2m** |
 
-### 🚀 Our model is **38% better** than Social-LSTM on ADE and **49% better** on FDE!
+### 🚀 Our model OUTPERFORMS Social-LSTM on ALL metrics!
 
 </div>
 
@@ -67,11 +67,11 @@ This project builds an **end-to-end deep learning solution** for pedestrian and 
 ```
 🎥 OBSERVE 2 seconds of past movement
         ↓
-🧠 UNDERSTAND social interactions
+🧠 UNDERSTAND social interactions between agents
         ↓
 🔮 PREDICT 3 most likely future paths
         ↓
-🚗 SAFE autonomous driving!
+🚗 ENABLE safe autonomous driving!
 ```
 
 ### ✨ Key Highlights
@@ -80,7 +80,7 @@ This project builds an **end-to-end deep learning solution** for pedestrian and 
 - 🔮 **Output:** Top-3 predicted future paths for next 3 seconds
 - 👥 **Social Awareness:** Understands how pedestrians interact with each other
 - 📐 **Verified:** Output shape `(Batch, 3, 6, 2)` tested on Colab & VS Code
-- 🏆 **Beats** Social-LSTM baseline on all metrics
+- 🏆 **Beats** Social-LSTM baseline by 38% on ADE and 49% on FDE
 
 ---
 
@@ -142,18 +142,12 @@ This project builds an **end-to-end deep learning solution** for pedestrian and 
 │  │  🕐 TEMPORAL ENCODER              │                           │
 │  │  LSTM/GRU per agent               │                           │
 │  │  hidden_dim = 64                  │                           │
-│  │  Captures motion history          │                           │
 │  └──────────────┬────────────────────┘                           │
-│                 │                                                │
-│     ┌───────────┴────────────┐                                   │
-│     │  Ego Hidden State  +   │  Neighbour Encodings (×20)        │
-│     └───────────┬────────────┘                                   │
 │                 │                                                │
 │                 ▼                                                │
 │  ┌───────────────────────────────────┐                           │
 │  │  👥 SOCIAL ATTENTION              │                           │
 │  │  Graph Attention Network (GAT)    │                           │
-│  │  Models pedestrian interactions   │                           │
 │  │  Up to 20 neighbours per scene    │                           │
 │  └──────────────┬────────────────────┘                           │
 │                 │                                                │
@@ -168,7 +162,6 @@ This project builds an **end-to-end deep learning solution** for pedestrian and 
 │  │  🔮 MULTI-MODAL DECODER           │                           │
 │  │  K=3 GRU decoders in parallel     │                           │
 │  │  + Log-Softmax mode classifier    │                           │
-│  │  Generates 3 possible futures     │                           │
 │  └──────────────┬────────────────────┘                           │
 │                 │                                                │
 │  📤 OUTPUT                                                       │
@@ -202,12 +195,6 @@ Total Loss = λ_reg × MSE(best_prediction, ground_truth)
 
 ## 📊 Dataset
 
-<div align="center">
-
-### 📦 nuScenes v1.0-mini
-
-</div>
-
 | 🏷️ Property | 📋 Details |
 |---|---|
 | 📛 **Name** | nuScenes |
@@ -223,11 +210,9 @@ Total Loss = λ_reg × MSE(best_prediction, ground_truth)
 
 ```
 Total Samples: 3,301
-├── 🏋️ Train    →  2,310 samples  (70%)
+├── 🏋️ Train     →  2,310 samples  (70%)
 ├── ✅ Validate  →    495 samples  (15%)
 └── 🧪 Test      →    496 samples  (15%)
-
-⚠️ Scene-level split used to prevent data leakage
 ```
 
 ---
@@ -238,33 +223,16 @@ Total Samples: 3,301
 📦 Trajectory-Prediction/
 │
 ├── 📄 README.md              ← You are here! 👋
-│
-├── 🐍 data_loader.py         ← nuScenes loading, preprocessing,
-│                                normalization, Dataset & DataLoader
-│
-├── 🧠 model.py               ← Full model:
-│                                TemporalEncoder + SocialAttention
-│                                + MultiModalDecoder + Predictor
-│
-├── 🏋️ train.py               ← Training loop:
-│                                loss, optimizer, scheduler,
-│                                checkpointing, resume support
-│
-├── 📈 evaluate.py            ← Evaluation metrics:
-│                                minADE@K, minFDE@K, Miss Rate
-│                                per-horizon ADE breakdown
-│
-├── 🔍 inference.py           ← Run predictions:
-│                                PNG trajectory visualisations
-│                                JSON predictions output
-│
-├── 📋 requirements.txt       ← All Python dependencies
-│
+├── 🐍 data_loader.py         ← nuScenes loading & preprocessing
+├── 🧠 model.py               ← Full model architecture
+├── 🏋️ train.py               ← Training loop with checkpointing
+├── 📈 evaluate.py            ← minADE@K, minFDE@K, Miss Rate
+├── 🔍 inference.py           ← Predictions + PNG visualisations
+├── 📋 requirements.txt       ← Python dependencies
 ├── 📊 outputs/               ← Sample prediction graphs
 │   ├── 🖼️ scene_0000.png
 │   ├── 🖼️ scene_0001.png
 │   └── 🖼️ scene_0002.png
-│
 └── 💾 checkpoints/
     └── 🤖 best_model.pt      ← Trained model (Val ADE: 0.3987m)
 ```
@@ -273,13 +241,6 @@ Total Samples: 3,301
 
 ## ⚙️ Setup & Installation
 
-### 📋 Prerequisites
-- 🐍 Python 3.8+
-- 📦 pip
-- 🔧 Git
-
-### 🚀 Quick Start
-
 ```bash
 # 1️⃣ Clone the repository
 git clone https://github.com/santhosh090705/Trajectory-Prediction.git
@@ -287,38 +248,18 @@ cd Trajectory-Prediction
 
 # 2️⃣ Create virtual environment
 python -m venv venv
-
-# Windows
-venv\Scripts\activate
-# Mac/Linux
-source venv/bin/activate
+venv\Scripts\activate        # Windows
+source venv/bin/activate     # Mac/Linux
 
 # 3️⃣ Install dependencies
 pip install -r requirements.txt
-```
-
-### 📥 Download nuScenes Dataset
-
-```
-1. Register at 👉 https://www.nuscenes.org/
-2. Download v1.0-mini (~4GB)
-3. Extract to ./data/nuscenes/
-
-📁 Expected structure:
-Trajectory-Prediction/
-└── data/
-    └── nuscenes/
-        ├── maps/
-        ├── samples/
-        ├── sweeps/
-        └── v1.0-mini/
 ```
 
 ---
 
 ## 🚀 How to Run
 
-### ✅ Step 1 — Verify Model (No dataset needed!)
+### ✅ Quick Model Verification (No dataset needed!)
 ```bash
 python model.py
 ```
@@ -331,40 +272,19 @@ python model.py
 model.py ✓  All assertions passed. 🎉
 ```
 
-### 🏋️ Step 2 — Train the Model
+### 🏋️ Train the Model
 ```bash
-python train.py \
-    --dataroot ./data/nuscenes \
-    --epochs 20 \
-    --batch_size 32 \
-    --save_dir ./checkpoints
+python train.py --dataroot ./data/nuscenes --epochs 20 --batch_size 32 --save_dir ./checkpoints
 ```
 
-### 📈 Step 3 — Evaluate
+### 📈 Evaluate
 ```bash
-python evaluate.py \
-    --dataroot ./data/nuscenes \
-    --checkpoint ./checkpoints/best_model.pt \
-    --split val
-```
-```
-═══════════════════════════════════════════════
-  BYTE RIDERS – Evaluation Report 🏆
-  Track 1: Intent & Trajectory Prediction
-═══════════════════════════════════════════════
-  minADE@3    :  0.4019 m  ✅
-  minFDE@3    :  0.6728 m  ✅
-  Miss Rate   :  4.85 %    ✅
-═══════════════════════════════════════════════
+python evaluate.py --dataroot ./data/nuscenes --checkpoint ./checkpoints/best_model.pt --split val
 ```
 
-### 🔍 Step 4 — Run Inference + Get Graphs
+### 🔍 Run Inference + Get Graphs
 ```bash
-python inference.py \
-    --dataroot ./data/nuscenes \
-    --checkpoint ./checkpoints/best_model.pt \
-    --num_scenes 10 \
-    --output_dir ./outputs
+python inference.py --dataroot ./data/nuscenes --checkpoint ./checkpoints/best_model.pt --num_scenes 10 --output_dir ./outputs
 ```
 
 ---
@@ -373,7 +293,7 @@ python inference.py \
 
 <div align="center">
 
-### 🏆 Verified Results — Trained on nuScenes v1.0-mini
+### ✅ Trained & Evaluated on nuScenes v1.0-mini | 495 Validation Samples
 
 </div>
 
@@ -381,23 +301,20 @@ python inference.py \
 
 | 🎯 Metric | 📊 Our Result | 📉 Social-LSTM | 🏆 Improvement |
 |:---:|:---:|:---:|:---:|
-| **minADE@3** | **0.4019 m** ✅ | 0.65 m | **🔥 38% better!** |
-| **minFDE@3** | **0.6728 m** ✅ | 1.31 m | **🔥 49% better!** |
-| **Miss Rate** | **4.85%** ✅ | — | **95.15% within 2m** |
+| **minADE@3** | **0.4019 m** ✅ | 0.65 m | 🔥 38% better |
+| **minFDE@3** | **0.6728 m** ✅ | 1.31 m | 🔥 49% better |
+| **Miss Rate** | **4.85%** ✅ | — | 95.15% within 2m |
 
 ### ⏱️ Per-Horizon ADE Breakdown
 
 ```
-Time      ADE         Visual
-──────────────────────────────────────────────
-t=0.5s →  0.1537 m   ████░░░░░░░░  (15cm) ✅
-t=1.0s →  0.2280 m   ██████░░░░░░  (23cm) ✅
-t=1.5s →  0.3265 m   ████████░░░░  (33cm) ✅
-t=2.0s →  0.4365 m   ██████████░░  (44cm) ✅
-t=2.5s →  0.5573 m   ████████████  (56cm) ✅
-t=3.0s →  0.6963 m   ██████████████(70cm) ✅
-──────────────────────────────────────────────
-📌 Error grows naturally over time — expected behaviour!
+t=0.5s →  0.1537 m   ████░░░░░░░░  ✅
+t=1.0s →  0.2280 m   ██████░░░░░░  ✅
+t=1.5s →  0.3265 m   ████████░░░░  ✅
+t=2.0s →  0.4365 m   ██████████░░  ✅
+t=2.5s →  0.5573 m   ████████████  ✅
+t=3.0s →  0.6963 m   ██████████████✅
+📌 Error grows naturally over time — perfectly expected!
 ```
 
 ### 📋 Training Summary
@@ -408,14 +325,13 @@ t=3.0s →  0.6963 m   ██████████████(70cm) ✅
 | 📉 Best Val ADE | **0.3987 m** |
 | 🏋️ Final Train ADE | 0.2875 m |
 | 🏋️ Final Train FDE | 0.4561 m |
-| ⏱️ Training time/epoch | ~2.8s (CPU) |
 | 💻 Hardware | Google Colab T4/A100 GPU |
 
 ---
 
 ## 🖼️ Example Output Graphs
 
-> 🎨 These are **real outputs** from our trained model on nuScenes scenes!
+> 🎨 These are **real outputs** from our trained model on nuScenes!
 
 ### 🗺️ How to Read the Graphs
 
@@ -427,26 +343,28 @@ t=3.0s →  0.6963 m   ██████████████(70cm) ✅
 | 🔵 **Blue** | Mode 2 — Second prediction |
 | 🟢 **Green** | Mode 3 — Third prediction |
 
----
+<br>
 
-### 📊 Scene 0 — Pedestrian turning while walking
-![Scene 0 Prediction](outputs/scene_0000.png)
+<p align="center">
+  <img src="outputs/scene_0000.png" width="30%"/>
+  &nbsp;&nbsp;
+  <img src="outputs/scene_0001.png" width="30%"/>
+  &nbsp;&nbsp;
+  <img src="outputs/scene_0002.png" width="30%"/>
+</p>
 
-> 🔍 **What's happening:** The pedestrian was walking upward (orange), then turned diagonally. Our model predicted 3 possible future paths with the correct direction covered!
+<p align="center">
+  <b>🚶 Scene 0</b> — Pedestrian turning &nbsp;&nbsp;&nbsp;&nbsp;
+  <b>🚶 Scene 1</b> — Direction change &nbsp;&nbsp;&nbsp;&nbsp;
+  <b>🚴 Scene 2</b> — Curved path
+</p>
 
----
+<br>
 
-### 📊 Scene 1 — Pedestrian stopping and changing direction
-![Scene 1 Prediction](outputs/scene_0001.png)
-
-> 🔍 **What's happening:** A pedestrian nearly stopped and changed direction. Mode 1 (red, p=0.88) correctly predicted staying near the origin position!
-
----
-
-### 📊 Scene 2 — Cyclist moving in curved path
-![Scene 2 Prediction](outputs/scene_0002.png)
-
-> 🔍 **What's happening:** A cyclist on a curved trajectory. Our model generated 3 plausible future paths covering the possible directions of movement!
+> 🔍 **Each graph shows:**
+> - 🟠 Orange = last observed position (starting point)
+> - 🟣 Purple dashed = where the pedestrian **actually went**
+> - 🔴🔵🟢 Coloured lines = our model's **3 predicted paths** with probabilities
 
 ---
 
@@ -470,27 +388,12 @@ t=3.0s →  0.6963 m   ██████████████(70cm) ✅
 ## 🔬 Technical Notes
 
 ```
-🎯 Coordinate System
-   └── Normalised to ego-agent's last observed position (0,0)
-   └── Translation-invariant model
-
-👥 Neighbour Handling
-   └── Up to 20 neighbours encoded per scene
-   └── Absent neighbours masked with -inf before attention
-
-🔮 Multi-Modal Strategy
-   └── Training: Best mode selected by minADE
-   └── Inference: All 3 modes returned with probabilities
-
-⚡ Training Stability
-   └── Gradient clipping: max_norm = 1.0
-   └── ReduceLROnPlateau: patience=5, factor=0.5
-   └── Adam optimizer: weight_decay=1e-4
-
-✅ Verified On
-   └── Google Colab (NVIDIA T4 GPU)
-   └── Windows VS Code (CPU mode)
-   └── PyTorch 2.10
+🎯 Coordinate System    → Normalised to ego-agent's last position (0,0)
+👥 Neighbour Handling   → Up to 20 neighbours, absent ones masked with -inf
+🔮 Multi-Modal Strategy → Training: Best mode by minADE | Inference: All 3 modes
+⚡ Training Stability   → Gradient clipping max_norm=1.0 + ReduceLROnPlateau
+✅ Verified On          → Google Colab (T4 GPU) + Windows VS Code (CPU)
+🛠️ Framework           → PyTorch 2.10
 ```
 
 ---
