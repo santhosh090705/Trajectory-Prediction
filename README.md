@@ -402,11 +402,11 @@ t=3.0s →  0.6963 m   ██████████████✅
 
 <div align="center">
 
-✅ All code is **original work** by Team Byte Riders
-✅ Developed for **MAHE Mobility Challenge 2026**
-✅ All members agree to hackathon **rules & evaluation**
-✅ GitHub repo is **publicly accessible**
-✅ Metrics are **real** — trained & evaluated on nuScenes
+#### ✅ All code is **original work** by Team Byte Riders
+#### ✅ Developed for **MAHE Mobility Challenge 2026**
+#### ✅ All members agree to hackathon **rules & evaluation**
+#### ✅ GitHub repo is **publicly accessible**
+#### ✅ Metrics are **real** — trained & evaluated on nuScenes
 
 </div>
 
@@ -414,10 +414,10 @@ t=3.0s →  0.6963 m   ██████████████✅
 
 <div align="center">
 
-## 🏆 Team Byte Riders
+### 🏆 Team Byte Riders
 
-### 🎓 Rajalakshmi Institute of Technology
-### 🚗 MAHE Mobility Challenge 2026 @ MIT Bengaluru
+#### 🎓 Rajalakshmi Institute of Technology
+#### 🚗 MAHE Mobility Challenge 2026 @ MIT Bengaluru
 
 <br>
 
